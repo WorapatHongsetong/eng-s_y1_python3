@@ -59,7 +59,7 @@ clock = pygame.time.Clock()
 
 
 # Hey Serhii, Play with this Args...
-circle = Circle(10, 100, 100, 20, 1) # radius, x, y, speed, starting_angle(rad)
+circle = Circle(10, 100, 100, 20, 0.2) # radius, x, y, speed, starting_angle(rad)
 
 
 
