@@ -1,3 +1,1 @@
-print("Hello World")
-
-print("Haha")
+# Hello Friends!
