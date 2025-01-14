@@ -3,6 +3,9 @@ import sys
 import math
 
 class Circle:
+    """
+    Require: math
+    """
     
     def __init__(self, 
                  radius: int, 
@@ -45,14 +48,20 @@ class Circle:
         return (self.x - self.radius, self.x + self.radius, self.y - self.radius, self.y + self.radius)
 
 class Game_Circle(Circle):
+    """
+    Require: pygame
+    """
 
     def __init__(self, radius, color, x, y, magnitude = 1, direction = math.pi / 4):
         super().__init__(radius, x, y, magnitude, direction)
         self.color = color
     
-    def draw(self, surface: "pygame_surface") -> None:
+    def draw(self, surface) -> None:
         center = (int(self.x), int(self.y))
         pygame.draw.circle(surface, self.color, center, self.radius)
+
+
+
 
 
 pygame.init()
@@ -73,7 +82,10 @@ clock = pygame.time.Clock()
 
 
 # Hey Serhii, Play with this Args...
-circle = Game_Circle(100, GREEN, 100, 100, 20, 3) # radius, x, y, speed, starting_angle(rad)
+circles = (
+    Game_Circle(100, GREEN, 100, 100, 20, 3),
+    Game_Circle(10, (255,255,255), 100, 100, 20, 7)
+    )
 
 
 
@@ -87,20 +99,23 @@ while running:
 
     screen.fill(BLACK)
 
-    circle.draw(screen)
+    for element in circles:
 
-    circle.move()
+        element.draw(screen)
 
-    collision_box = circle.get_collision_box()
+        element.move()
 
-    if collision_box[0] < 0:
-        circle.reflect_angle(math.pi)
-    if collision_box[1] > SCREEN_WIDTH:
-        circle.reflect_angle(0)
-    if collision_box[2] < 0:
-        circle.reflect_angle(math.pi / 2)
-    if collision_box[3] > SCREEN_HEIGHT:
-        circle.reflect_angle(3 * math.pi / 2)
+        collision_box = element.get_collision_box()
+
+        if collision_box[0] < 0:
+            element.reflect_angle(math.pi)
+        if collision_box[1] > SCREEN_WIDTH:
+            element.reflect_angle(0)
+        if collision_box[2] < 0:
+            element.reflect_angle(math.pi / 2)
+        if collision_box[3] > SCREEN_HEIGHT:
+            element.reflect_angle(3 * math.pi / 2)
+
 
     pygame.display.flip()
     clock.tick(60)
