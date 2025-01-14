@@ -1,6 +1,7 @@
 import pygame
 import sys
 import math
+import random
 
 class Circle:
     """
@@ -49,6 +50,9 @@ class Circle:
         if funny:
             self.direction * math.sin(self.direction)
 
+        self.x += self.magnitude * math.cos(self.direction)
+        self.y += self.magnitude * math.sin(self.direction)
+
     def move(self) -> None:
         self.x += self.magnitude * math.cos(self.direction)
         self.y += self.magnitude * math.sin(self.direction)
@@ -87,11 +91,10 @@ class Game_Circle(Circle):
             self.reflect_angle(3 * math.pi / 2)
 
 def violently_collision(circle1: Circle, circle2: Circle) -> None:
-    distance = round(math.sqrt((circle1.x - circle2.x) ** 2 + (circle1.y - circle2.y) ** 2))
-    radial_sum = circle1.radius + circle2.radius
-    padding = radial_sum + 5
+    distance = int(math.sqrt((circle1.x - circle2.x) ** 2 + (circle1.y - circle2.y) ** 2))
+    radial_sum = int(circle1.radius + circle2.radius)
 
-    if radial_sum < abs(distance) <= padding:
+    if abs(distance) < radial_sum:
         circle1.reflect_angle(circle2.direction)
         circle2.reflect_angle(circle1.direction)
 
@@ -116,13 +119,20 @@ clock = pygame.time.Clock()
 
 
 # Hey Serhii, Play with this Args...
-circles = (
-    Game_Circle(25, GREEN, 100, 100, 20, 3),
-    Game_Circle(10, (255,255,255), 100, 100, 20, 7),
-    Game_Circle(40, (255,0,0), 400, 400, 4, 1),
-    Game_Circle(40, (255,0,255), 200, 400, 7, 0),
-    Game_Circle(40, (0,0,255), 400, 200, 10, 6)
-    )
+circles = []
+
+for i in range(50):
+    circles.append(Game_Circle(random.randint(5, 10),
+            (random.randint(0,255), random.randint(0,255), random.randint(0,255)),
+            random.randint(0, SCREEN_WIDTH),
+            random.randint(0, SCREEN_HEIGHT),
+            random.randint(5,10),
+            random.choice([1, 1.5, 4, 6, 3]))
+        )
+
+circles = tuple(circles)
+
+
 
 
 
@@ -134,7 +144,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill(BLACK)
+    screen.fill((255, 255, 255))
 
     for element in circles:
 
