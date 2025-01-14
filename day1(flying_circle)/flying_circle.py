@@ -17,7 +17,7 @@ class Circle:
         self.magnitude = magnitude
         self.direction = direction
 
-    def reflect_angle(self, normal_vector: float) -> None:
+    def reflect_angle(self, normal_vector: float, error:bool = False) -> None:
         direction_ex = (math.cos(self.direction), math.sin(self.direction))
         normal_vector_ex = (math.cos(normal_vector), math.sin(normal_vector))
         
@@ -30,17 +30,29 @@ class Circle:
         
         self.direction = math.atan2(reflected[1], reflected[0])
 
+        if error:
+            self.direction * math.sin(self.direction)
+
     def move(self) -> None:
         self.x += self.magnitude * math.cos(self.direction)
         self.y += self.magnitude * math.sin(self.direction)
 
-    def draw(self, surface, color) -> None:
-        center = (int(self.x), int(self.y))
-        pygame.draw.circle(surface, color, center, self.radius)
+    # def draw(self, surface, color) -> None:
+    #     center = (int(self.x), int(self.y))
+    #     pygame.draw.circle(surface, color, center, self.radius)
 
     def get_collision_box(self) -> tuple:
-        """Returns the coordinates of the collision box for the circle"""
         return (self.x - self.radius, self.x + self.radius, self.y - self.radius, self.y + self.radius)
+
+class Game_Circle(Circle):
+
+    def __init__(self, radius, color, x, y, magnitude = 1, direction = math.pi / 4):
+        super().__init__(radius, x, y, magnitude, direction)
+        self.color = color
+    
+    def draw(self, surface: "pygame_surface") -> None:
+        center = (int(self.x), int(self.y))
+        pygame.draw.circle(surface, self.color, center, self.radius)
 
 
 pygame.init()
@@ -58,8 +70,10 @@ clock = pygame.time.Clock()
 
 
 
+
+
 # Hey Serhii, Play with this Args...
-circle = Circle(10, 100, 100, 20, 0.2) # radius, x, y, speed, starting_angle(rad)
+circle = Game_Circle(100, GREEN, 100, 100, 20, 3) # radius, x, y, speed, starting_angle(rad)
 
 
 
@@ -73,7 +87,7 @@ while running:
 
     screen.fill(BLACK)
 
-    circle.draw(screen, GREEN)
+    circle.draw(screen)
 
     circle.move()
 
