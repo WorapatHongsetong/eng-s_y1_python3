@@ -36,7 +36,8 @@ class Circle:
         direction_ex = (math.cos(self.direction), math.sin(self.direction))
         normal_vector_ex = (math.cos(normal_vector), math.sin(normal_vector))
         
-        dot_product = (direction_ex[0] * normal_vector_ex[0]) + (direction_ex[1] * normal_vector_ex[1])
+        dot_product = (direction_ex[0] * normal_vector_ex[0])\
+             + (direction_ex[1] * normal_vector_ex[1])
         
         reflected = (
             direction_ex[0] - 2 * dot_product * normal_vector_ex[0],
@@ -57,7 +58,10 @@ class Circle:
     #     pygame.draw.circle(surface, color, center, self.radius)
 
     def get_collision_box(self) -> tuple:
-        return (self.x - self.radius, self.x + self.radius, self.y - self.radius, self.y + self.radius)
+        return (self.x - self.radius, 
+        self.x + self.radius, 
+        self.y - self.radius, 
+        self.y + self.radius)
 
 class Game_Circle(Circle):
     """
