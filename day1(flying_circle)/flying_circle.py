@@ -20,7 +20,19 @@ class Circle:
         self.magnitude = magnitude
         self.direction = direction
 
-    def reflect_angle(self, normal_vector: float, error:bool = False) -> None:
+    def __eq__(self, other) -> bool:
+        if self.radius == other.radius \
+            and self.x == other.x \
+            and self.y == other.y \
+            and self.magnitude == other.magnitude \
+            and self.direction == other.direction:
+
+            return True
+        
+        else:
+            return False
+
+    def reflect_angle(self, normal_vector: float, funny:bool = False) -> None:
         direction_ex = (math.cos(self.direction), math.sin(self.direction))
         normal_vector_ex = (math.cos(normal_vector), math.sin(normal_vector))
         
@@ -33,7 +45,7 @@ class Circle:
         
         self.direction = math.atan2(reflected[1], reflected[0])
 
-        if error:
+        if funny:
             self.direction * math.sin(self.direction)
 
     def move(self) -> None:
@@ -60,6 +72,24 @@ class Game_Circle(Circle):
         center = (int(self.x), int(self.y))
         pygame.draw.circle(surface, self.color, center, self.radius)
 
+    def bounce_edge(self, bound_x: tuple, bound_y: tuple) -> None:
+        if self.get_collision_box()[0] < bound_x[0]:
+            self.reflect_angle(math.pi)
+        if self.get_collision_box()[1] > bound_x[1]:
+            self.reflect_angle(0)
+        if self.get_collision_box()[2] < bound_y[0]:
+            self.reflect_angle(math.pi / 2)
+        if self.get_collision_box()[3] > bound_y[1]:
+            self.reflect_angle(3 * math.pi / 2)
+
+def violently_collision(circle1: Circle, circle2: Circle) -> None:
+    distance = round(math.sqrt((circle1.x - circle2.x) ** 2 + (circle1.y - circle2.y) ** 2))
+    radial_sum = circle1.radius + circle2.radius
+    padding = radial_sum + 5
+
+    if radial_sum < abs(distance) <= padding:
+        circle1.reflect_angle(circle2.direction)
+        circle2.reflect_angle(circle1.direction)
 
 
 
@@ -83,8 +113,11 @@ clock = pygame.time.Clock()
 
 # Hey Serhii, Play with this Args...
 circles = (
-    Game_Circle(100, GREEN, 100, 100, 20, 3),
-    Game_Circle(10, (255,255,255), 100, 100, 20, 7)
+    Game_Circle(25, GREEN, 100, 100, 20, 3),
+    Game_Circle(10, (255,255,255), 100, 100, 20, 7),
+    Game_Circle(40, (255,0,0), 400, 400, 4, 1),
+    Game_Circle(40, (255,0,255), 200, 400, 7, 0),
+    Game_Circle(40, (0,0,255), 400, 200, 10, 6)
     )
 
 
@@ -105,16 +138,11 @@ while running:
 
         element.move()
 
-        collision_box = element.get_collision_box()
+        element.bounce_edge((0, SCREEN_WIDTH), (0, SCREEN_HEIGHT))
 
-        if collision_box[0] < 0:
-            element.reflect_angle(math.pi)
-        if collision_box[1] > SCREEN_WIDTH:
-            element.reflect_angle(0)
-        if collision_box[2] < 0:
-            element.reflect_angle(math.pi / 2)
-        if collision_box[3] > SCREEN_HEIGHT:
-            element.reflect_angle(3 * math.pi / 2)
+        for extra_circle in circles:
+            if not element.__eq__(extra_circle):
+                violently_collision(element, extra_circle)
 
 
     pygame.display.flip()
