@@ -1,8 +1,16 @@
 # server side
 import socket
+import threading
 
 HOST = '0.0.0.0'
-PORT = 21002
+PORT = 21001
+
+def send_message_function(client_socket):
+    while True:
+        message = input("Enter a message: ")
+        client_socket.send((message + "\n").encode())
+
+
 
 kill_server = False
 
@@ -19,6 +27,10 @@ while not kill_server:
     print("Waiting for a new client to connect...")
     conn, addr = s.accept()
     print("Connection accepted from", addr)
+
+    send_thread = threading.Thread(target=send_message_function, args=(conn,))
+    send_thread.start()
+
 
     with conn:
         while True:
@@ -42,13 +54,13 @@ while not kill_server:
 
                     print("Received message:", message_received.strip())
                     
-                    reply = input("Reply to client: ")
-                    if reply.strip() == "kill()":
-                        kill_server = True
-                        print("Shutting down server...")
-                        break
-                    elif reply:
-                        conn.send(("Server: " + reply + "\n").encode())
+                    # reply = input("Reply to client: ")
+                    # if reply.strip() == "kill()":
+                    #     kill_server = True
+                    #     print("Shutting down server...")
+                    #     break
+                    # elif reply:
+                    #     conn.send(("Server: " + reply + "\n").encode())
                 else:
                     break
 
