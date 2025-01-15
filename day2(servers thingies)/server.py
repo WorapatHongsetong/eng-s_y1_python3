@@ -39,3 +39,9 @@ with conn:
 
 print("OK!")
 
+
+"""
+Tuple                       vs      List
+    More light weight.                  Handle many method.
+    Can use as key in Dict.
+"""

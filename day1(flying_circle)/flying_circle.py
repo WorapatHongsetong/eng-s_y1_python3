@@ -122,7 +122,8 @@ clock = pygame.time.Clock()
 circles = []
 
 for i in range(50):
-    circles.append(Game_Circle(random.randint(5, 10),
+    circles.append(Game_Circle(
+            random.randint(5, 10),
             (random.randint(0,255), random.randint(0,255), random.randint(0,255)),
             random.randint(0, SCREEN_WIDTH),
             random.randint(0, SCREEN_HEIGHT),
@@ -160,7 +161,7 @@ while running:
 
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(120)
 
 pygame.quit()
 sys.exit()
