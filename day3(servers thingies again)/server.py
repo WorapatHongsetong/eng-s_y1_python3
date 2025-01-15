@@ -8,6 +8,8 @@ HOST = '0.0.0.0'
 PORT = 21002
 s = None
 
+kill_server = False
+
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print("Socket created")
@@ -43,8 +45,19 @@ with conn:
                 break
 
         if message_received:
+            if message_received.endswith("exit()\n"):
+                print(addr, "disconnected")
+                break
+
             print("Received message: ", message_received)
-            conn.send(("Server summarized: " + message_received[:10] + "\n").encode())
+            # conn.send(("Server summarized: " + message_received[:10] + "\n").encode())
+
+            reply = input("Reply to client: ")
+            if reply == "kill()":
+                kill_server = True
+            elif reply:
+                conn.send(("Server: " + reply + "\n").encode())
+
         else:
             break
 

@@ -11,18 +11,22 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     while True:
         message = input("Enter a message: ")
         s.send((message+"\n").encode())
-
         message_received = ""
+
         while True:
             data = s.recv(32)
             if data:
                 print('Received data chunk from server: ', repr(data))
                 message_received += data.decode()
                 if message_received.endswith("\n"):
+                    print(message_received)
                     print("End of message received")
                     break
             else:
-                print("Connection lost!")
+                if message == "exit()":
+                    print("Disconnected from server!")
+                else:
+                    print("Connection lost!")
                 break
         if not message_received:
             break
